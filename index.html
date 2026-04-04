@@ -1,0 +1,168 @@
+<!doctype html>
+<title>Pixel website</title>
+<link rel="icon" href="putnam.png" />
+
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Grenze:ital,wght@0,100..900;1,100..900&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Metamorphous&display=swap");
+    :root {
+        --col-bg: #222120;
+        --col-form: hsl(from var(--col-bg) h s calc(l + 4));
+        --col-form-hilite: hsl(from var(--col-form) h s calc(l + 4));
+
+        --padding-form: 6px 8px;
+
+        font-size: 11px;
+        /*font-family: Grenze, serif;*/
+        /*font-family: UnifrakturMaguntia;*/
+        font-family: Metamorphous;
+        letter-spacing: 0.1rem;
+    }
+    #drawEl {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        text-align: center;
+
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+    }
+    h1,
+    p {
+        margin: 0;
+    }
+    body,
+    input,
+    button {
+        cursor: none;
+        letter-spacing: inherit;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+    }
+    body {
+        background-color: var(--col-bg);
+        color: #eee;
+        margin: 0;
+        overflow: hidden;
+    }
+    main {
+        padding-top: 12px;
+        grid-column-start: 2;
+        background-color: var(--col-bg);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    h1 {
+        font-size: 21px;
+    }
+    canvas {
+        transform: scale(4);
+        transform-origin: top left;
+        width: round(down, calc(100vw / 4), 1px);
+        height: round(down, calc(100vh / 4), 1px);
+        box-sizing: border-box;
+        image-rendering: pixelated;
+        -webkit-font-smoothing: none;
+        background-image: url("astoria.png");
+    }
+    button {
+        border: none;
+        border-radius: 4px;
+        padding: var(--padding-form);
+
+        transition: background-color 0.2s ease;
+        background-color: var(--col-form);
+        &:hover {
+            background-color: var(--col-form-hilite);
+        }
+    }
+    input[type="text"] {
+        border: none;
+        border-bottom: 1px solid var(--col-form);
+        border-radius: 4px;
+        padding: var(--padding-form);
+
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+        background-color: transparent;
+        &:hover {
+            background-color: var(--col-form);
+            border-color: var(--col-form-hilite);
+        }
+        &:focus-visible {
+            outline: 1px solid white;
+        }
+    }
+    .input-with-label {
+        align-self: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    label[for="range-input"] {
+        position: absolute;
+        right: 0;
+        translate: calc(100% + 4px);
+    }
+</style>
+
+<canvas layoutsubtree>
+    <div id="drawEl">
+        <main>
+            <h1>Hello</h1>
+            <p>I am an HTML &lt;p&gt; tag</p>
+            <div>
+                <input type="text" />
+                <button>Click me</button>
+            </div>
+            <div class="input-with-label">
+                <input id="range-input" type="range" />
+                <label for="range-input"></label>
+            </div>
+        </main>
+    </div>
+</canvas>
+
+<script>
+    const cursorImgEl = new Image();
+    cursorImgEl.src = "./aoe2cursor.png";
+    let cursorX = 0;
+    let cursorY = 0;
+
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.onpaint = (e) => {
+        ctx.reset();
+        let transform = ctx.drawElementImage(drawEl, 0, 0);
+        drawEl.style.transform = transform.toString();
+        ctx.drawImage(cursorImgEl, cursorX, cursorY);
+    };
+    canvas.requestPaint();
+
+    canvas.onpointerdown = (e) => {
+        canvas.setPointerCapture(e.pointerId);
+    };
+    canvas.addEventListener("mousemove", (e) => {
+        cursorX = Math.floor(e.clientX / 4);
+        cursorY = Math.floor(e.clientY / 4);
+        canvas.requestPaint();
+    });
+
+    const observer = new ResizeObserver(([entry]) => {
+        canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
+        canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+    });
+    observer.observe(canvas, { box: "device-pixel-content-box" });
+
+    const rangeInputEl = document.querySelector("#range-input");
+    const updateRangeInputLabel = (val) => {
+        const label = document.querySelector("#range-input + label");
+        label.textContent = val + "%";
+    };
+    updateRangeInputLabel(rangeInputEl.value);
+    rangeInputEl.oninput = (e) => updateRangeInputLabel(e.target.value);
+</script>
