@@ -3,7 +3,6 @@
 <link rel="icon" href="putnam.png" />
 
 <style>
-    @import url("https://fonts.googleapis.com/css2?family=Grenze:ital,wght@0,100..900;1,100..900&display=swap");
     @import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap");
     @import url("https://fonts.googleapis.com/css2?family=Metamorphous&display=swap");
     :root {
@@ -56,13 +55,14 @@
         gap: 16px;
     }
     h1 {
-        font-size: 21px;
+        font-size: 24px;
+        font-family: UnifrakturMaguntia;
     }
     canvas {
         transform: scale(4);
         transform-origin: top left;
-        width: round(down, calc(100vw / 4), 1px);
-        height: round(down, calc(100vh / 4), 1px);
+        width: round(calc(100vw / 4), 1px);
+        height: round(calc(100vh / 4), 1px);
         box-sizing: border-box;
         image-rendering: pixelated;
         -webkit-font-smoothing: none;
@@ -110,6 +110,13 @@
     }
 </style>
 
+<p id="no-support-msg" style="display: none">
+    HTML-in-Canvas API is not supported by your browser.
+    <br />
+    Make sure you're using
+    <a href="https://www.google.com/chrome/canary/" target="_blank">Chrome Canary</a> and have the
+    <a href="chrome://flags/#canvas-draw-element" target="_blank">HTML-in-Canvas API feature flag</a> enabld.
+</p>
 <canvas layoutsubtree>
     <div id="drawEl">
         <main>
@@ -117,13 +124,19 @@
             <p>I am an HTML &lt;p&gt; tag</p>
             <div>
                 <input type="text" />
-                <button>Click me</button>
+                <button command="show-modal" commandfor="test-modal">Click me</button>
             </div>
             <div class="input-with-label">
                 <input id="range-input" type="range" />
                 <label for="range-input"></label>
             </div>
         </main>
+        <dialog id="test-modal" closedby="any">
+            <form method="dialog">
+                <p>Amaze amaze amaze!</p>
+                <button>Okay</button>
+            </form>
+        </dialog>
     </div>
 </canvas>
 
@@ -135,6 +148,12 @@
 
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext("2d");
+
+    if (canvas.requestPaint === undefined) {
+        document.getElementById("no-support-msg").style.display = "block";
+        return;
+    }
+
     canvas.onpaint = (e) => {
         ctx.reset();
         let transform = ctx.drawElementImage(drawEl, 0, 0);
