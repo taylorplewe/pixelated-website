@@ -9,6 +9,7 @@
         --col-bg: #222120;
         --col-form: hsl(from var(--col-bg) h s calc(l + 4));
         --col-form-hilite: hsl(from var(--col-form) h s calc(l + 4));
+        --col-text-faint: #888;
         --col-brand: #66c;
         --col-brand-hover: hsl(from var(--col-brand) h s calc(l + 16));
 
@@ -35,7 +36,8 @@
     }
     body,
     input,
-    button {
+    button,
+    a {
         cursor: none;
         letter-spacing: inherit;
         font-family: inherit;
@@ -48,17 +50,21 @@
         margin: 0;
         overflow: hidden;
     }
-    main {
-        padding-top: 12px;
+    #main-and-footer {
+        padding: 12px 0;
+        display: flex;
+        flex-direction: column;
         grid-column-start: 2;
+    }
+    main {
+        flex-grow: 1;
         background-color: var(--col-bg);
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
-    h1 {
-        font-size: 24px;
-        font-family: UnifrakturMaguntia;
+    footer {
+        color: var(--col-text-faint);
     }
     canvas {
         transform: scale(4);
@@ -69,6 +75,10 @@
         image-rendering: pixelated;
         -webkit-font-smoothing: none;
         background-image: url("astoria.png");
+    }
+    h1 {
+        font-size: 24px;
+        font-family: UnifrakturMaguntia;
     }
     button {
         border: none;
@@ -138,18 +148,21 @@
 </p>
 <canvas layoutsubtree>
     <div id="drawEl">
-        <main>
-            <h1>Hello</h1>
-            <p>I am an HTML &lt;p&gt; tag</p>
-            <div>
-                <input type="text" />
-                <button command="show-modal" commandfor="test-modal">Click me</button>
-            </div>
-            <div class="input-with-label">
-                <input id="range-input" type="range" />
-                <label for="range-input"></label>
-            </div>
-        </main>
+        <div id="main-and-footer">
+            <main>
+                <h1>Hello</h1>
+                <p>I am an HTML &lt;p&gt; tag</p>
+                <div>
+                    <input type="text" />
+                    <button command="show-modal" commandfor="test-modal">Click me</button>
+                </div>
+                <div class="input-with-label">
+                    <input id="range-input" type="range" />
+                    <label for="range-input"></label>
+                </div>
+            </main>
+            <footer>Check out the <a href="https://github.com/taylorplewe/pixelated-website" target="_blank">source code</a></footer>
+        </div>
         <dialog id="test-modal" closedby="any">
             <form method="dialog">
                 <p>Amaze amaze amaze!</p>
