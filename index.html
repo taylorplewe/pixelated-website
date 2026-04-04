@@ -213,14 +213,17 @@
         canvas.setPointerCapture(e.pointerId);
     };
     canvas.addEventListener("mousemove", (e) => {
-        cursorX = Math.floor(e.clientX / 4);
-        cursorY = Math.floor(e.clientY / 4);
+        cursorX = Math.round(e.clientX / 4);
+        cursorY = Math.round(e.clientY / 4);
         canvas.requestPaint();
     });
 
     const observer = new ResizeObserver(([entry]) => {
-        canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
-        canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+        const computedStyle = getComputedStyle(canvas);
+        canvas.width = parseInt(computedStyle.width);
+        canvas.height = parseInt(computedStyle.height);
+        // canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
+        // canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
     });
     observer.observe(canvas, { box: "device-pixel-content-box" });
 
